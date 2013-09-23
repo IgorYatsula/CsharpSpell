@@ -1,0 +1,110 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_8 = [
+   [26,9,26,98,'dccv']
+, [27,9,27,10,'dccv']
+, [28,13,28,50,'dccv']
+, [29,13,29,32,'dccv']
+, [30,13,30,34,'dccv']
+, [31,9,31,10,'dccv']
+, [38,9,38,10,'dccv']
+, [39,13,39,35,'dccv']
+, [41,13,41,20,'dccv']
+, [41,35,41,65,'dccv']
+, [41,22,41,31,'dccv']
+, [42,13,42,14,'dccv']
+, [43,17,43,39,'dccv']
+, [44,17,44,18,'dccv']
+, [45,21,45,54,'dccv']
+, [46,17,46,18,'dccv']
+, [47,13,47,14,'dccv']
+, [41,32,41,34,'dccv']
+, [48,9,48,10,'dccv']
+, [54,9,54,10,'dccv']
+, [55,13,55,87,'dccv']
+, [55,101,55,103,'dccv']
+, [56,13,56,58,'dccv']
+, [57,9,57,10,'dccv']
+, [65,9,65,10,'dccv']
+, [66,13,66,59,'dccv']
+, [67,9,67,10,'dccv']
+, [55,87,55,101,'dccv']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src8" class="dotCoverSource"><pre>using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using CsharpSpell.Entities;
+using CsharpSpell.Logging;
+
+namespace CsharpSpell.Parsing
+{
+    /// &lt;summary&gt;
+    /// Represents entity to check the found words in the dictionary.
+    /// &lt;/summary&gt;
+    public class WordChecker
+    {
+        private readonly string dictionaryPath;
+        private readonly BlockingCollection&lt;Word&gt; words;
+        private readonly ILogger logger;
+        private HashSet&lt;string&gt; dictionary; 
+
+        /// &lt;summary&gt;
+        /// Creates a new instance of the word checker.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;dictionaryPath&quot;&gt;The path to the dictionary file.&lt;/param&gt;
+        /// &lt;param name=&quot;words&quot;&gt;The collection with words for checking.&lt;/param&gt;
+        /// &lt;param name=&quot;logger&quot;&gt;The logger to print program&#39;s results.&lt;/param&gt;
+        public WordChecker(string dictionaryPath, BlockingCollection&lt;Word&gt; words, ILogger logger)
+        {
+            this.dictionaryPath = dictionaryPath;
+            this.words = words;
+            this.logger = logger;
+        }
+
+        /// &lt;summary&gt;
+        /// Starts the checking process. 
+        /// During this process the checker will wait for new words, receive and check it, and print results for incorrect words.
+        /// &lt;/summary&gt;
+        public void StartChecking()
+        {
+            this.LoadDictionary();
+
+            foreach (Word word in words.GetConsumingEnumerable()) // wait for new words from analizer
+            {
+                if (!this.Check(word))
+                {
+                    this.logger.Log(word.ToString());
+                }
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Loads the dictionary content into the memory.
+        /// &lt;/summary&gt;
+        private void LoadDictionary()
+        {
+            IEnumerable&lt;string&gt; lines = File.ReadLines(dictionaryPath).Select(line =&gt; line.ToLower());
+            this.dictionary = new HashSet&lt;string&gt;(lines);
+        }
+
+        /// &lt;summary&gt;
+        /// Checks the word in the dictionary.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;word&quot;&gt;The received word from analizer.&lt;/param&gt;
+        /// &lt;returns&gt;The result of checking, &#39;true&#39; for correct words.&lt;/returns&gt;
+        private bool Check(Word word)
+        {
+            return this.dictionary.Contains(word.Content);
+        }
+    }
+}</pre></code><script type="text/javascript">
+			applyranges('src8', RANGES_8)
+		</script>
+	</body>
+</html>

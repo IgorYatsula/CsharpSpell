@@ -1,0 +1,112 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_2 = [
+   [19,9,19,10,'dccv']
+, [21,13,21,50,'dccv']
+, [22,13,22,56,'dccv']
+, [23,13,23,85,'dccv']
+, [26,13,26,32,'dccv']
+, [29,13,29,87,'dccv']
+, [30,9,30,10,'dccv']
+, [40,9,40,10,'dccv']
+, [42,13,42,50,'dccv']
+, [43,13,43,56,'dccv']
+, [44,13,44,85,'dccv']
+, [47,13,47,32,'dccv']
+, [50,13,50,60,'dccv']
+, [51,9,51,10,'dccv']
+, [55,9,55,10,'dccv']
+, [58,13,58,50,'dccv']
+, [59,13,59,56,'dccv']
+, [60,13,67,19,'dccv']
+, [68,13,68,85,'dccv']
+, [71,13,71,32,'dccv']
+, [74,13,74,63,'dccv']
+, [75,9,75,10,'dccv']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src2" class="dotCoverSource"><pre>using System.Collections.Concurrent;
+using System.Collections.Generic;
+using CsharpSpell.Entities;
+using CsharpSpell.Logging;
+using CsharpSpell.Parsing;
+using Moq;
+using NUnit.Framework;
+using SharpTestsEx;
+
+namespace CsharpSpell.Tests
+{
+    [TestFixture]
+    public class FileAnalizerTests
+    {
+        [TestCase(&quot;TestFiles/WithNotClosedComments/incorrectFile1.txt&quot;)]
+        [TestCase(&quot;TestFiles/WithNotClosedComments/incorrectFile2.txt&quot;)]
+        [TestCase(&quot;TestFiles/WithNotClosedComments/incorrectFile3.txt&quot;)]
+        public void Analize_IncorrectFiles_LogErrorMessage(string testFileName)
+        {
+            // Arrange
+            var loggerMock = new Mock&lt;ILogger&gt;();
+            var words = new BlockingCollection&lt;Word&gt;();
+            var analizer = new FileAnalizer(testFileName, words, loggerMock.Object);
+            
+            // Act
+            analizer.Analize();
+
+            // Assert
+            loggerMock.Verify(logger =&gt; logger.Log(It.IsAny&lt;string&gt;()), Times.Once());
+        }
+
+        [TestCase(&quot;TestFiles/CorrectFiles/MultilineComment1.txt&quot;, 3)]
+        [TestCase(&quot;TestFiles/CorrectFiles/MultilineComment2.txt&quot;, 4)]
+        [TestCase(&quot;TestFiles/CorrectFiles/MultilineComment3.txt&quot;, 6)]
+        [TestCase(&quot;TestFiles/CorrectFiles/MultilineComment4.txt&quot;, 2)]
+        [TestCase(&quot;TestFiles/CorrectFiles/MultilineComment5.txt&quot;, 7)]
+        [TestCase(&quot;TestFiles/CorrectFiles/SinglelineComment1.txt&quot;, 6)]
+        [TestCase(&quot;TestFiles/CorrectFiles/SinglelineComment2.txt&quot;, 10)]
+        public void Analize_CommentsAnalizing_FindsCorrectNumberOfWordsInTheComments(string testFileName, int correctNumber)
+        {
+            // Arrange
+            var loggerMock = new Mock&lt;ILogger&gt;();
+            var words = new BlockingCollection&lt;Word&gt;();
+            var analizer = new FileAnalizer(testFileName, words, loggerMock.Object);
+
+            // Act
+            analizer.Analize();
+
+            // Assert
+            words.Count.Should().Be.EqualTo(correctNumber);
+        }
+
+        [Test]
+        public void Analize_WordsAnalizing_FindsCorrectWords()
+        {
+            // Arrange
+            const string testFileName = &quot;TestFiles/CorrectFiles/MultilineCommentWordsDetails.txt&quot;;
+            var loggerMock = new Mock&lt;ILogger&gt;();
+            var words = new BlockingCollection&lt;Word&gt;();
+            var expectedWords = new List&lt;Word&gt;
+                {
+                    new Word {Row = 2, Column = 3, Content = &quot;first&quot;},
+                    new Word {Row = 2, Column = 9, Content = &quot;string&quot;},
+                    new Word {Row = 3, Column = 3, Content = &quot;multi&quot;},
+                    new Word {Row = 3, Column = 9, Content = &quot;line&quot;},
+                    new Word {Row = 4, Column = 3, Content = &quot;comment&quot;}
+                };
+            var analizer = new FileAnalizer(testFileName, words, loggerMock.Object);
+
+            // Act
+            analizer.Analize();
+
+            // Assert
+            words.Should().Have.SameSequenceAs(expectedWords);
+        }
+    }
+}</pre></code><script type="text/javascript">
+			applyranges('src2', RANGES_2)
+		</script>
+	</body>
+</html>

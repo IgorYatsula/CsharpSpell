@@ -1,0 +1,8 @@
+﻿/// some
+/// single
+/// comments
+
+public class MyClass /* my class */
+{}
+
+// again

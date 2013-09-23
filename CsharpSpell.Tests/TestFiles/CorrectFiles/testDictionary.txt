@@ -1,0 +1,3 @@
+﻿existWord1
+eXIstWord3
+existword2

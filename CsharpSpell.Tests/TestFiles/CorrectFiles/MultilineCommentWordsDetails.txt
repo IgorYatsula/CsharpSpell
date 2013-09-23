@@ -1,0 +1,8 @@
+﻿/*
+* first string
+* multi line
+* comment
+**/
+
+public class MyClass
+{}

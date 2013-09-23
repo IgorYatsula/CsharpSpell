@@ -1,0 +1,123 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_5 = [
+   [31,9,31,93,'dccv']
+, [32,9,32,10,'dccv']
+, [33,13,33,38,'dccv']
+, [34,13,34,32,'dccv']
+, [35,13,35,34,'dccv']
+, [36,13,36,47,'dccv']
+, [37,9,37,10,'dccv']
+, [43,9,43,10,'dccv']
+, [45,13,45,66,'dccv']
+, [47,13,47,69,'dccv']
+, [48,13,48,14,'dccv']
+, [49,17,49,86,'dccv']
+, [50,17,50,45,'dccv']
+, [51,17,51,24,'dccv']
+, [54,13,54,103,'dccv']
+, [55,18,55,36,'dccv']
+, [56,13,56,14,'dccv']
+, [57,17,57,48,'dccv']
+, [59,17,59,64,'dccv']
+, [60,17,60,45,'dccv']
+, [61,17,61,18,'dccv']
+, [62,21,62,83,'dccv']
+, [63,21,63,28,'dccv']
+, [63,45,63,52,'dccv']
+, [63,30,63,41,'dccv']
+, [64,21,64,22,'dccv']
+, [65,25,65,73,'dccv']
+, [66,25,66,119,'dccv']
+, [67,21,67,22,'dccv']
+, [63,42,63,44,'dccv']
+, [68,17,68,18,'dccv']
+, [69,13,69,14,'dccv']
+, [55,62,55,73,'dccv']
+, [55,37,55,60,'dccv']
+, [71,13,71,41,'dccv']
+, [72,9,72,10,'dccv']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src5" class="dotCoverSource"><pre>using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using CsharpSpell.Entities;
+using CsharpSpell.Logging;
+
+namespace CsharpSpell.Parsing
+{
+    /// &lt;summary&gt;
+    /// Represents entity to analize source file, find comments and words.
+    /// &lt;/summary&gt;
+    public class FileAnalizer
+    {
+        private const string NotClosedCommentPattern    = @&quot;\/\*(?![a-zA-Z\d\s\*-_\(\)$\|%\{\}&amp;!~@#]*\*\/)&quot;,
+                             WordPattern                = @&quot;[a-zA-Z\d]+&quot;;
+
+        private readonly string filePath;
+        private readonly BlockingCollection&lt;Word&gt; words;
+        private readonly ILogger logger;
+        private readonly CommentFinder finder;
+        
+        /// &lt;summary&gt;
+        /// Creates a new instance of analizer.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;filePath&quot;&gt;The path to the source file.&lt;/param&gt;
+        /// &lt;param name=&quot;words&quot;&gt;The collection to store found words and checking spelling.&lt;/param&gt;
+        /// &lt;param name=&quot;logger&quot;&gt;The logger to print program&#39;s results.&lt;/param&gt;
+        public FileAnalizer(string filePath, BlockingCollection&lt;Word&gt; words, ILogger logger)
+        {
+            this.filePath = filePath;
+            this.words = words;
+            this.logger = logger;
+            this.finder = new CommentFinder();
+        }
+
+        /// &lt;summary&gt;
+        /// Analizes the file and store found words into the collection for future checking.
+        /// &lt;/summary&gt;
+        public void Analize()
+        {
+            // Load file content into the memory.
+            string fileContent = File.ReadAllText(this.filePath);
+
+            if (Regex.IsMatch(fileContent, NotClosedCommentPattern)) // check if the file can be processed
+            {
+                this.logger.Log(&quot;File is not correct, there is not closed comment!&quot;);
+                this.words.CompleteAdding();
+                return;
+            }
+
+            IList&lt;string&gt; lines = fileContent.Split(new[] { &quot;\n&quot; }, StringSplitOptions.None).ToList();
+            for (var lineIndex = 0; lineIndex &lt; lines.Count; lineIndex++)
+            {
+                string line = lines[lineIndex];
+
+                string comment = this.finder.FindComment(line);
+                if (comment != string.Empty)
+                {
+                    MatchCollection matches = Regex.Matches(comment, WordPattern);
+                    foreach (Match match in matches)
+                    {
+                        int columnIndex = line.IndexOf(match.Value) + 1;
+                        this.words.Add(new Word { Row = lineIndex + 1, Column = columnIndex, Content = match.Value });
+                    }
+                }
+            }
+            
+            this.words.CompleteAdding();
+        }
+    }
+}</pre></code><script type="text/javascript">
+			applyranges('src5', RANGES_5)
+		</script>
+	</body>
+</html>

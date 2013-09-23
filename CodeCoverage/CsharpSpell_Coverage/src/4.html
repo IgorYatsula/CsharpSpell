@@ -1,0 +1,48 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_4 = [
+   [15,9,15,10,'dcuc']
+, [16,13,16,40,'dcuc']
+, [17,9,17,10,'dcuc']
+, [25,9,25,10,'dcuc']
+, [26,13,26,49,'dcuc']
+, [27,9,27,10,'dcuc']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src4" class="dotCoverSource"><pre>using System;
+
+namespace CsharpSpell.Logging
+{
+    /// &lt;summary&gt;
+    /// Represents entity to print program&#39;s results at the console.
+    /// &lt;/summary&gt;
+    public class ConsoleLogger : ILogger
+    {
+        /// &lt;summary&gt;
+        /// Prints message at the console.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;message&quot;&gt;The message for printing.&lt;/param&gt;
+        public void Log(string message)
+        {
+            Console.WriteLine(message);
+        }
+
+        /// &lt;summary&gt;
+        /// Prints message at the console used string.Format.
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;format&quot;&gt;The format of printing string.&lt;/param&gt;
+        /// &lt;param name=&quot;messages&quot;&gt;The messages for printing.&lt;/param&gt;
+        public void LogFormat(string format, params object[] messages)
+        {
+            Console.WriteLine(format, messages);
+        }
+    }
+}</pre></code><script type="text/javascript">
+			applyranges('src4', RANGES_4)
+		</script>
+	</body>
+</html>

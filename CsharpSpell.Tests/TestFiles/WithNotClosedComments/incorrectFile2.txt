@@ -1,0 +1,9 @@
+﻿/* correct comment */
+
+some code
+
+/* asdk jasdlkjas ld /*jas ldas das das das da
+sd as dasd asd as d
+not closed comment
+
+some code

@@ -1,0 +1,8 @@
+﻿
+some code
+
+/*
+* !@ special #$ %^ &*( )}{symbols[].,~~~~~~~
+*/
+
+some code

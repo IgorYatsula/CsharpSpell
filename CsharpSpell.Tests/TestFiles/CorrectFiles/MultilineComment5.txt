@@ -1,0 +1,5 @@
+﻿some code
+
+code /* long multiline
+some //text again
+nested comment */ another code

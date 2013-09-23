@@ -1,0 +1,111 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_6 = [
+   [15,9,15,10,'dcuc']
+, [17,13,17,46,'dcuc']
+, [19,13,19,35,'dcuc']
+, [20,13,20,14,'dcuc']
+, [21,17,21,42,'dcuc']
+, [22,17,22,36,'dcuc']
+, [23,13,23,14,'dcuc']
+, [25,13,25,14,'dcuc']
+, [26,17,26,92,'dcuc']
+, [27,17,27,24,'dcuc']
+, [30,13,30,46,'dcuc']
+, [31,13,31,14,'dcuc']
+, [32,17,32,78,'dcuc']
+, [33,17,33,24,'dcuc']
+, [36,13,36,40,'dcuc']
+, [37,13,37,14,'dcuc']
+, [38,17,38,74,'dcuc']
+, [39,17,39,24,'dcuc']
+, [42,13,42,56,'dcuc']
+, [43,13,43,70,'dcuc']
+, [44,13,44,74,'dcuc']
+, [46,13,46,72,'dcuc']
+, [47,13,47,76,'dcuc']
+, [50,13,50,14,'dcuc']
+, [51,17,51,57,'dcuc']
+, [52,13,52,14,'dcuc']
+, [53,13,53,58,'dcuc']
+, [54,13,54,14,'dcuc']
+, [55,17,55,40,'dcuc']
+, [56,17,56,75,'dcuc']
+, [56,97,56,99,'dcuc']
+, [57,13,57,14,'dcuc']
+, [59,13,59,32,'dcuc']
+, [60,9,60,10,'dcuc']
+, [56,75,56,97,'dcuc']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src6" class="dotCoverSource"><pre>using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using CsharpSpell.Entities;
+using CsharpSpell.Logging;
+using CsharpSpell.Parsing;
+
+namespace CsharpSpell
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string dictionaryPath, filePath;
+            var logger = new ConsoleLogger();
+
+            if (args.Count() == 2)
+            {
+                dictionaryPath = args[0];
+                filePath = args[1];
+            }
+            else
+            {
+                logger.Log(&quot;Incorrect number of received parameters, try again later....&quot;);
+                return;
+            }
+
+            if (!File.Exists(dictionaryPath))
+            {
+                logger.Log(&quot;Can&#39;t find dictionary file, try again later...&quot;);
+                return;
+            }
+
+            if (!File.Exists(filePath))
+            {
+                logger.Log(&quot;Can&#39;t find source file, try again later...&quot;);
+                return;
+            }
+
+            var words = new BlockingCollection&lt;Word&gt;();
+            var analizer = new FileAnalizer(filePath, words, logger);
+            var checker = new WordChecker(dictionaryPath, words, logger);
+
+            var analizerTask = Task.Factory.StartNew(analizer.Analize);
+            var checkerTask = Task.Factory.StartNew(checker.StartChecking);
+
+            try
+            {
+                Task.WaitAll(analizerTask, checkerTask);
+            }
+            catch (AggregateException aggregateException) // TODO: need to refactor in the future to use concrete exceptions
+            {
+                words.CompleteAdding(); // to be sure that checkerTask won&#39;t wait new words
+                aggregateException.InnerExceptions.ToList().ForEach(ex =&gt; logger.Log(ex.Message));
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
+</pre></code><script type="text/javascript">
+			applyranges('src6', RANGES_6)
+		</script>
+	</body>
+</html>

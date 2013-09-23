@@ -1,0 +1,11 @@
+﻿// single comment
+
+some code
+
+/* correct comment with special symbols
+* !@#$%^&*()_+=- /{}][\.,~
+*/
+some code
+
+/* incorrect comment
+adsasdasdasd

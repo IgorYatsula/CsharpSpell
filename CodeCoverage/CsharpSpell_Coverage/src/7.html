@@ -1,0 +1,48 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../js/coverreport.js">
+
+		</script><script type="text/javascript">
+			RANGES_7 = [
+   [28,9,28,10,'dccv']
+, [29,13,29,71,'dccv']
+, [30,9,30,10,'dccv']
+];
+		</script><link rel="stylesheet" type="text/css" href="../css/coverreport.css" />
+	</head><body>
+		<code id="src7" class="dotCoverSource"><pre>namespace CsharpSpell.Entities
+{
+    /// &lt;summary&gt;
+    /// Represents entity to store information about found word in the comments.
+    /// &lt;/summary&gt;
+    public struct Word
+    {
+        /// &lt;summary&gt;
+        /// The word&#39;s content.
+        /// &lt;/summary&gt;
+        public string Content { get; set; }
+
+        /// &lt;summary&gt;
+        /// The row number of the current word.
+        /// &lt;/summary&gt;
+        public int Row { get; set; }
+
+        /// &lt;summary&gt;
+        /// The column number of the current word.
+        /// &lt;/summary&gt;
+        public int Column { get; set; }
+
+        /// &lt;summary&gt;
+        /// Converts the current word to string representation in the required format.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        public override string ToString()
+        {
+            return string.Format(&quot;{0}:{1}:{2}&quot;, Row, Column, Content);
+        }
+    }
+}</pre></code><script type="text/javascript">
+			applyranges('src7', RANGES_7)
+		</script>
+	</body>
+</html>

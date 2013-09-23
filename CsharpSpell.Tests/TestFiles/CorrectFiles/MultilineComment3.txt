@@ -1,0 +1,7 @@
+﻿/****
+many stars
+*****/
+
+/* first 
+comment */ some code /* another 
+comment */

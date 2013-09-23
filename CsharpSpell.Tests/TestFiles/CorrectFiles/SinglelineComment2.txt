@@ -1,0 +1,16 @@
+﻿//
+
+/*
+* first string
+*  ////////multi line
+* comment
+// **/
+comment continous */
+
+public class MyClass
+{
+	int i = 5;
+	// strange code
+}
+
+code // comment
